@@ -1,43 +1,60 @@
-#!/bin/bash -e
-
-# Make sure GPUs are up
-if [ $SLURM_LOCALID -eq 0 ] ; then
-    rocm-smi
-fi
-sleep 2
-
-export MIOPEN_USER_DB_PATH="/tmp/$(whoami)-miopen-cache-$SLURM_NODEID"
-export MIOPEN_CUSTOM_CACHE_DIR=$MIOPEN_USER_DB_PATH
-
-# Set MIOpen cache to a temporary folder.
-if [ $SLURM_LOCALID -eq 0 ] ; then
-    rm -rf $MIOPEN_USER_DB_PATH
-    mkdir -p $MIOPEN_USER_DB_PATH
-fi
-sleep 2
+#!/bin/bash
 
 # Report affinity
-echo "Rank $SLURM_PROCID --> $(taskset -p $$)"
+echo "Rank \$SLURM_PROCID --> \$(taskset -p \$\$)"
 
-# !Remove this if using an image extended with cotainr! Start conda environment inside the container
+# Report GPUs
+if [ $SLURM_LOCALID -eq 0 ] ; then
+    rocm-smi
+else
+  sleep 2
+fi
+
+# Start conda environment inside the container
 $WITH_CONDA
+# Setting the caches relevant to our application.
+export TORCH_HOME=/workdir/torch-cache
+export HF_HOME=/workdir/hf-cache
+export TOKENIZERS_PARALLELISM=false
 
-# Optional! Set NCCL debug output to check correct use of aws-ofi-rccl (these are very verbose)
-export NCCL_DEBUG=INFO
-export NCCL_DEBUG_SUBSYS=INIT,COLL
-
-# Set interfaces to be used by RCCL.
+# Tell RCCL to use only Slingshot interfaces and GPU RDMA
 export NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3
-export NCCL_NET_GDR_LEVEL=3
+export NCCL_NET_GDR_LEVEL=PHB
 
-# Set environment for the app
-export MASTER_ADDR=$(python get-master.py "$SLURM_NODELIST")
-export MASTER_PORT=29500
+# Tell MIOpen where to store its cache
+export MIOPEN_USER_DB_PATH="/tmp/$(whoami)-miopen-cache-\$SLURM_NODEID"
+export MIOPEN_CUSTOM_CACHE_DIR=$MIOPEN_USER_DB_PATH
+
+if [ $SLURM_LOCALID -eq 0 ] ; then
+  rm -rf $MIOPEN_USER_DB_PATH
+  mkdir -p $MIOPEN_USER_DB_PATH    
+else
+  sleep 2
+fi
+
+# export NCCL_DEBUG=INFO 
+# export NCCL_DEBUG_SUBSYS=INIT,COLL
+# export NCCL_DEBUG_FILE=/tmp/$(whoami)-rccl-rank\$SLURM_PROCID.txt
+
+# Translate SLURM environment 
+
+export MASTER_PORT=25900
 export WORLD_SIZE=$SLURM_NPROCS
+export LOCAL_WORLD_SIZE=2
 export RANK=$SLURM_PROCID
-# export HIP_VISIBLE_DEVICES=0
+export LOCAL_RANK=$SLURM_LOCALID
 
-export HIP_LAUNCH_BLOCKING=1
+set -x
 
-# Run app
-python deepspeed_train.py --deepspeed
+# Run application
+        python -u train.py \
+          --deepspeed \
+          --deepspeed_config ds_fp16_z1_config.json \
+          -a resnet18 \
+          --batch-size $((2*1)) \
+          --workers 7  \
+          --gpu $SLURM_LOCALID \
+          --local_rank $SLURM_LOCALID \
+          --world-size $SLURM_NPROCS \
+          --epochs 2 \
+
