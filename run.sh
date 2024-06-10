@@ -40,21 +40,17 @@ fi
 
 export MASTER_PORT=25900
 export WORLD_SIZE=$SLURM_NPROCS
-export LOCAL_WORLD_SIZE=2
+export LOCAL_WORLD_SIZE=1
 export RANK=$SLURM_PROCID
 export LOCAL_RANK=$SLURM_LOCALID
 
 set -x
 
 # Run application
-        python -u train.py \
+python -u train.py \
           --deepspeed \
           --deepspeed_config ds_fp16_z1_config.json \
-          -a resnet18 \
-          --batch-size $((2*1)) \
-          --workers 7  \
-          --gpu $SLURM_LOCALID \
+          --batch-size $((1)) \
           --local_rank $SLURM_LOCALID \
           --world-size $SLURM_NPROCS \
-          --epochs 2 \
 

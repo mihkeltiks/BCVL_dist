@@ -1,0 +1,27 @@
+HELLO!
+/var/spool/slurmd/job7304010/slurm_script: line 17:  : command not found
+0
+Rank $SLURM_PROCID --> $(taskset -p $$)
+
+
+========================= ROCm System Management Interface =========================
+=================================== Concise Info ===================================
+GPU  Temp (DieEdge)  AvgPwr  SCLK    MCLK     Fan  Perf    PwrCap  VRAM%  GPU%  
+0    41.0c           108.0W  800Mhz  1600Mhz  0%   manual  500.0W    0%   0%    
+1    54.0c           N/A     800Mhz  1600Mhz  0%   manual  0.0W      0%   0%    
+====================================================================================
+=============================== End of ROCm SMI Log ================================
++ python -u train.py
+Work in /scratch/project_462000008/tiks/BCVL_dist/basic
+
+GPU is ON!
+INFO:root:Init Model
+INFO:root:Start Training
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [01:05<03:16, 65.36s/it] 50%|█████     | 2/4 [01:16<01:07, 33.68s/it] 50%|█████     | 2/4 [01:28<01:28, 44.28s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:04<00:14,  4.85s/it] 50%|█████     | 2/4 [00:09<00:09,  4.59s/it] 50%|█████     | 2/4 [00:13<00:13,  6.85s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:12<00:36, 12.27s/it] 50%|█████     | 2/4 [00:23<00:23, 11.86s/it] 50%|█████     | 2/4 [00:35<00:35, 17.72s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:04<00:14,  4.98s/it] 50%|█████     | 2/4 [00:09<00:09,  4.65s/it] 50%|█████     | 2/4 [00:13<00:13,  6.92s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:11<00:35, 11.87s/it] 50%|█████     | 2/4 [00:23<00:23, 11.76s/it] 50%|█████     | 2/4 [00:34<00:34, 17.48s/it]
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:04<00:14,  4.91s/it]slurmstepd: error: *** STEP 7304010.0 ON nid005040 CANCELLED AT 2024-06-05T15:36:02 ***
+slurmstepd: error: *** JOB 7304010 ON nid005040 CANCELLED AT 2024-06-05T15:36:02 ***

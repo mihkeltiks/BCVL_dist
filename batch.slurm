@@ -6,17 +6,17 @@
 #SBATCH --output="output_%x_%j.txt"
 #SBATCH --partition=small-g
 #SBATCH --mem=128G
-#SBATCH --time=00:10:00
+#SBATCH --time=00:40:00
 #SBATCH --account=project_462000002
 
 PROJECT_DIR=/scratch/project_462000008/tiks/BCVL_dist
 CONTAINER=/appl/local/containers/sif-images/lumi-pytorch-rocm-5.6.1-python-3.10-pytorch-v2.2.2.sif
 
-echo "HELLO!"
+
 
 N=1 ; \  
 MASTER_ADDR=$(scontrol show hostname "$SLURM_NODELIST" | head -n1) \
-echo $SLURM_LOCALID
+
 srun -N $N -n $((N*2)) --gpus $((N*2)) \
     singularity exec \
     -B $PWD \

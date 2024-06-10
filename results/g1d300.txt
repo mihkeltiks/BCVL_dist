@@ -1,0 +1,25 @@
+HELLO!
+/var/spool/slurmd/job7304125/slurm_script: line 17:  : command not found
+0
+Rank $SLURM_PROCID --> $(taskset -p $$)
+
+
+========================= ROCm System Management Interface =========================
+=================================== Concise Info ===================================
+GPU  Temp (DieEdge)  AvgPwr  SCLK    MCLK     Fan  Perf    PwrCap  VRAM%  GPU%  
+0    45.0c           N/A     800Mhz  1600Mhz  0%   manual  0.0W      0%   0%    
+====================================================================================
+=============================== End of ROCm SMI Log ================================
++ python -u train.py
+Work in /scratch/project_462000008/tiks/BCVL_dist/basic
+
+GPU is ON!
+INFO:root:Init Model
+INFO:root:Start Training
+TRAIN
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [02:58<08:55, 178.46s/it] 50%|█████     | 2/4 [04:36<04:22, 131.00s/it] 50%|█████     | 2/4 [06:14<06:14, 187.30s/it]
+NOTRAIN
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:29<01:27, 29.05s/it] 50%|█████     | 2/4 [00:57<00:56, 28.46s/it] 50%|█████     | 2/4 [01:25<01:25, 42.72s/it]
+TRAIN
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [01:38<04:56, 98.73s/it]slurmstepd: error: *** STEP 7304125.0 ON nid005028 CANCELLED AT 2024-06-05T15:48:04 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 7304125 ON nid005028 CANCELLED AT 2024-06-05T15:48:04 DUE TO TIME LIMIT ***

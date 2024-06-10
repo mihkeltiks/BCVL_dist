@@ -1,5 +1,5 @@
 {
-    "train_batch_size": 256,
+    "train_batch_size": 2,
     "gradient_accumulation_steps": 1,
     "steps_per_print": 50,
 
@@ -20,10 +20,10 @@
 	"stage": 1
     },
     "zero_allow_untested_optimizer": true,
-    "fp16": {
+    "bf16": {
 	"enabled": false
     },
-    "bf16": {
+    "fp16": {
 	"enabled": true,
 	"auto_cast": true
     },
